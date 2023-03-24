@@ -69,6 +69,7 @@ for search in list_search:
     company=[]
     company.append(search[1])
     search=search[1]
+    print(search+" 시작")
  
     ######################한신평 시작#####################
     #한신평 테이블 : 기업어음, 전단채, issuer rating, 보험금지급능력평가, 자산유동화증권, 유동화익스포져, 관련 자산유동화증권, 관련 유동화 익스포져 순
