@@ -22,7 +22,10 @@ while True:
     #기업명에서 (구 xx)를 잘라내자
     if line.find('(')!=-1:
         idx=line.find('(')
-        line=line[0:idx].split()
+        if len(line[0:idx].split())!=1:
+            line=line[0:idx].split()
+        else:
+            line=line.split()
     else :
         line=line.split()
     
@@ -232,6 +235,29 @@ for search in list_search:
 #    company.append(cp3)
 #    company.append(stb3)
     output.append(company)
+    
+    with open('output.csv','a',newline='') as f:
+        name=company[0]
+        for row in company[1]:
+            line=','.join(s for s in row)
+            line=name+',한신평cp,'+line           
+            f.write(line)
+            f.write('\n')
+        for row in company[3]:
+            line=','.join(s for s in row)
+            line=name+',나신평cp,'+line
+            f.write(line)
+            f.write('\n')
+        for row in company[2]:
+            line=','.join(s for s in row)
+            line=name+',한신평stp,'+line
+            f.write(line)
+            f.write('\n')
+        for row in company[4]:
+            line=','.join(s for s in row)
+            line=name+',나신평stp,'+line
+            f.write(line)
+            f.write('\n')
 
     
 '''
