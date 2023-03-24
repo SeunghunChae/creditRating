@@ -88,6 +88,7 @@ for search in list_search:
             
             del rows[0]
             for row in rows:
+                row[5]=''#리포트 항목의 공백 제거
                 temp=[]
                 td = row.find_elements(By.TAG_NAME, "td")
                 for i in td:
@@ -115,6 +116,7 @@ for search in list_search:
             stb1.append(['재무기준일', '발행한도(억원)', '평가종류', '등급', '평가일', '유효일', '리포트', 'ESG인증'])    
             del rows[0]
             for row in rows:
+                row[6]=''#리포트 항목의 공백 제거
                 temp=[]
                 td = row.find_elements(By.TAG_NAME, "td")
                 for i in td:
@@ -326,7 +328,7 @@ with open('output.csv','a',newline='') as f:
             f.write('\n')
         for row in i[3]:
             line=','.join(s for s in row)
-            line=name+',sk신평cp,'+line
+            line=name+',나신평cp,'+line
             f.write(line)
             f.write('\n')
         for row in i[2]:
