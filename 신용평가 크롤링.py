@@ -56,20 +56,27 @@ url1 = 'https://www.kisrating.com/ratingsSearch/corp_search.do'         #한국�
 url2 = 'https://www.nicerating.com/disclosure/dayRatingNews.do'         #나이스신용평가
 url3 = 'https://www.korearatings.com/cms/frCmnCon/index.do?MENU_ID=360' #한국기업평가
 
-options = webdriver.ChromeOptions()
-options.add_argument('--headless')
-options.add_argument('--disable-gpu')
 
-service = Service('c:\chromedriver.exe')
-driver = webdriver.Chrome(service=service, options=options)
 
 #driver = webdriver.Chrome('c:\chromedriver.exe')
 
+k=0
+no_repeat=5
+
 for search in list_search:
+    #메모리 누수를 막기위해 5번마다 크롬 드라이버를 끈다.
+    if k%no_repeat==0:
+        options = webdriver.ChromeOptions()
+        options.add_argument('--headless')
+        options.add_argument('--disable-gpu')
+
+        service = Service('c:\chromedriver.exe')
+        driver = webdriver.Chrome(service=service, options=options)
+    
     company=[]
     company.append(search[1])
     search=search[1]
-    print(search+" 시작")
+    print('회사명 : '+search+"\n")
  
     ######################한신평 시작#####################
     #한신평 테이블 : 기업어음, 전단채, issuer rating, 보험금지급능력평가, 자산유동화증권, 유동화익스포져, 관련 자산유동화증권, 관련 유동화 익스포져 순
@@ -233,7 +240,7 @@ for search in list_search:
 #    company.append(stb3)
     output.append(company)
     
-    with open('output.csv','a',newline='') as f:
+    with open('output2.csv','a',newline='') as f:
         name=company[0]
         for row in company[1]:
             line=','.join(s for s in row)
@@ -255,6 +262,10 @@ for search in list_search:
             line=name+',나신평stp,'+line
             f.write(line)
             f.write('\n')
+
+    k+=1
+    if k%no_repeat==0:
+        driver.quit()
 
     
 '''
