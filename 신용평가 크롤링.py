@@ -321,24 +321,26 @@ for i in output:
 with open('output.csv','a',newline='') as f:
     for i in output:
         name=i[0]
+        cpline=''
+        stpline=''
         for row in i[1]:
             line=','.join(s for s in row)
             line=name+',한신평cp,'+line
-            f.write(line)
-            f.write('\n')
+            cpline+=line
         for row in i[3]:
             line=','.join(s for s in row)
-            line=name+',나신평cp,'+line
-            f.write(line)
+            line=',나신평cp,'+line
+            cpline+=line
+            f.write(cpline)
             f.write('\n')
         for row in i[2]:
             line=','.join(s for s in row)
             line=name+',한신평stp,'+line
-            f.write(line)
-            f.write('\n')
+            stpline+=line
         for row in i[4]:
             line=','.join(s for s in row)
-            line=name+',나신평stp,'+line
-            f.write(line)
+            line=',나신평stp,'+line
+            stpline+=line
+            f.write(stpline)
             f.write('\n')
 
