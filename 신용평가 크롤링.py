@@ -31,6 +31,7 @@ driver.implicitly_wait(1)
 
 
 ######################한신평 시작#####################
+print("한신평 시작\n")
 driver.get(url1)
 driver.implicitly_wait(1)
 
@@ -57,17 +58,17 @@ try:
             for i in td:
                 temp.append(i.text)
             cp1.append(temp)
+        print("한신평 "+search+"의 기업어음 리스트 : ")
+        for i in cp1:
+            print(i)
     else:
         print(search+" 기업은 한신평에 기업어움이 없습니다.\n")
-
-    print("한신평 "+search+"의 기업어음 리스트 : ")
     
 except Exception:
     print(search+" 기업은 한신평에 기업어움이 없습니다.\n")
 
 
-for i in cp1:
-    print(i)
+
 
 try:
     stb1=[] #asset backed short-term bond
@@ -85,13 +86,13 @@ try:
             for i in td:
                 temp.append(i.text)
             stb1.append(temp)
+            
+        print("한신평 "+search+"의 전자단기사채 리스트 : ")
+        for i in stb1:
+            print(i)
     else:
         print(search+" 기업은 한신평에 전단채가 없습니다.\n")
         
-    print("한신평 "+search+"의 전자단기사채 리스트 : ")
-    for i in stb1:
-        print(i)
-
 except Exception:
     print(search+" 기업은 한신평에 전단채가 없습니다.\n")
 
@@ -109,9 +110,7 @@ try:
     driver.find_element(By.CSS_SELECTOR, '#tabCompany > li:nth-child(2) > a').click()
 except Exception:
     print("나신평 기업 여러건 검색됨.")
-    print("맨 위의 기업 검색")
     WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tbl1 > tbody > tr:nth-child(1) > td.cell_type01 > a')))
-    print("클릭한다")
     driver.find_element(By.CSS_SELECTOR, '#tbl1 > tbody > tr:nth-child(1) > td.cell_type01 > a').click()
     WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tabCompany > li:nth-child(2) > a')))
     driver.find_element(By.CSS_SELECTOR, '#tabCompany > li:nth-child(2) > a').click()
@@ -129,15 +128,14 @@ try:
         rows=rows[0].text.split('\n')
         for i in rows:
             cp2.append(i.split(' '))
+
+        print("나신평 "+search+"의 기업어음 리스트 : ")
+        for i in cp2:
+            print(i)
             
     else:
-        print(search+" 기업은 나신평에 기업어움이 없습니다.\n")
-
-    print("나신평 "+search+"의 기업어음 리스트 : ")
-
-    for i in cp2:
-        print(i)
-        
+        print(search+" 기업은 나신평에 기업어움이 없습니다.\n")    
+           
 except Exception:
     print(search+" 기업은 나신평에 기업어움이 없습니다.\n")
 
@@ -155,19 +153,21 @@ try:
         rows=rows[0].text.split('\n')
         for i in rows:
             stb2.append(i.split(' '))
+
+        print("나신평 "+search+"의 전자단기사채 리스트 : ")
+        for i in stb2:
+            print(i)
             
     else:
         print(search+" 기업은 나신평에 전자단기사채가 없습니다.\n")
-
-    print("나신평 "+search+"의 전자단기사채 리스트 : ")
-    for i in stb2:
-        print(i)
+   
         
 except Exception:
     print(search+" 기업은 나신평에 전자단기사채가 없습니다.\n")
 
 
 
+print("한기평 시작\n")
 #############################한기평 시작#####################
 driver.get(url3)
 WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#searchTxt')))
@@ -204,12 +204,12 @@ try:
             for j in range(4, 25):
                 temp.append(td[j].text)
             cp3.append(temp)
+            
+        print("한기평 기업어음 :")        
+        for i in cp3:
+            print(i)
     else:
-        print(search+" 기업은 한기평에 기업어음이 없습니다.\n")
-
-    print("한기평 기업어음 :")
-    for i in cp3:
-        print(i)
+        print(search+" 기업은 한기평에 기업어음이 없습니다.\n")    
         
 except Exception:
     print(search+" 기업은 한기평에 기업어음이 없습니다.\n")
@@ -231,13 +231,15 @@ try:
             for j in range(1, 14):
                 temp.append(td[j].text)
             stp3.append(temp)
+            
+        print("한기평 전단채 :")
+        for i in stp3:
+            print(i)
+        
     else:
         print(search+" 기업은 한기평에 기업어음이 없습니다.\n")
 
-    print("한기평 전단채 :")
-    for i in stp3:
-        print(i)
-        
+    
 except Exception:
     print(search+" 기업은 한기평에 기업어음이 없습니다.\n")
 
