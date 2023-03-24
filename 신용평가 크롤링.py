@@ -51,29 +51,25 @@ nostp3=[]
 
 del list_search[0]
 
+
+url1 = 'https://www.kisrating.com/ratingsSearch/corp_search.do'         #한국신용평가 searchKeyword
+url2 = 'https://www.nicerating.com/disclosure/dayRatingNews.do'         #나이스신용평가
+url3 = 'https://www.korearatings.com/cms/frCmnCon/index.do?MENU_ID=360' #한국기업평가
+
+options = webdriver.ChromeOptions()
+options.add_argument('--headless')
+options.add_argument('--disable-gpu')
+
+service = Service('c:\chromedriver.exe')
+driver = webdriver.Chrome(service=service, options=options)
+
+#driver = webdriver.Chrome('c:\chromedriver.exe')
+
 for search in list_search:
     company=[]
     company.append(search[1])
     search=search[1]
-
-    url1 = 'https://www.kisrating.com/ratingsSearch/corp_search.do'         #한국신용평가 searchKeyword
-    url2 = 'https://www.nicerating.com/disclosure/dayRatingNews.do'         #나이스신용평가
-    url3 = 'https://www.korearatings.com/cms/frCmnCon/index.do?MENU_ID=360' #한국기업평가
-
-    options = webdriver.ChromeOptions()
-    options.add_argument('--headless')
-    options.add_argument('--disable-gpu')
-
-    service = Service('c:\chromedriver.exe')
-    driver = webdriver.Chrome(service=service, options=options)
-
-
-
-    #driver = webdriver.Chrome('c:\chromedriver.exe')
-    driver.implicitly_wait(1)
-
-
-
+ 
     ######################한신평 시작#####################
     #한신평 테이블 : 기업어음, 전단채, issuer rating, 보험금지급능력평가, 자산유동화증권, 유동화익스포져, 관련 자산유동화증권, 관련 유동화 익스포져 순
     print("한신평 시작\n")
