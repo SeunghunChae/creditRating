@@ -37,6 +37,14 @@ file.close()
 
 #########################################입력 끝###########################################
 output=[]
+no_exist=[]
+multi=[]
+nocp1=[]
+nostp1=[]
+nocp2=[]
+nostp2=[]
+nocp3=[]
+nostp3=[]
 
 del list_search[0]
 
@@ -88,11 +96,11 @@ for search in list_search:
             
             del rows[0]
             for row in rows:
-                row[5]=''#리포트 항목의 공백 제거
                 temp=[]
                 td = row.find_elements(By.TAG_NAME, "td")
                 for i in td:
                     temp.append(i.text)
+                temp[5]=''
                 cp1.append(temp)
 
             '''
@@ -101,6 +109,7 @@ for search in list_search:
                 print(i)
             '''
         except Exception:
+            nocp1.append(search)
             print(search+" 기업은 한신평에 기업어음이 없습니다.\n")
 
 
@@ -116,11 +125,11 @@ for search in list_search:
             stb1.append(['재무기준일', '발행한도(억원)', '평가종류', '등급', '평가일', '유효일', '리포트', 'ESG인증'])    
             del rows[0]
             for row in rows:
-                row[6]=''#리포트 항목의 공백 제거
                 temp=[]
                 td = row.find_elements(By.TAG_NAME, "td")
                 for i in td:
                     temp.append(i.text)
+                temp[6]=''
                 stb1.append(temp)
             '''    
             print("한신평 "+search+"의 전자단기사채 리스트 : ")
@@ -128,9 +137,11 @@ for search in list_search:
                 print(i)
             '''    
         except Exception:
+            nostp1.append(search)
             print(search+" 기업은 한신평에 전단채가 없습니다.\n")
 
     except Exception:
+        no_exist.append(search)
         print(search+" 기업은 한신평에 검색결과가 없습니다.\n")
         print(search+" 기업은 한신평에 기업어음이 없습니다.\n")
         print(search+" 기업은 한신평에 전단채가 없습니다.\n")
@@ -151,12 +162,14 @@ for search in list_search:
         driver.find_element(By.CSS_SELECTOR, '#tabCompany > li:nth-child(2) > a').click()
     except Exception:
         print("나신평 기업 여러건 검색됨.")
+        multi.append(search)
         try:
             WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tbl1 > tbody > tr:nth-child(1) > td.cell_type01 > a')))
             driver.find_element(By.CSS_SELECTOR, '#tbl1 > tbody > tr:nth-child(1) > td.cell_type01 > a').click()
             WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tabCompany > li:nth-child(2) > a')))
             driver.find_element(By.CSS_SELECTOR, '#tabCompany > li:nth-child(2) > a').click()
         except Exception:
+            no_exist.append(search)
             print(search +" 회사는 나신평 내 검색결과 없음")
 
     try:
@@ -181,6 +194,7 @@ for search in list_search:
                     print(i)           
                '''
     except Exception:
+        nocp2.append(search)
         print(search+" 기업은 나신평에 기업어움이 없습니다.\n")
 
     try:
@@ -208,6 +222,7 @@ for search in list_search:
                     print(i)
                 '''
     except Exception:
+        nostp2.append(search)
         print(search+" 기업은 나신평에 전자단기사채가 없습니다.\n")
 
     company.append(cp1)
@@ -318,6 +333,33 @@ for i in output:
         print(j)
     print('\n')
 
+
+
+with open('output.csv','a',newline='') as f:
+    for i in output:
+        name=i[0]
+        for row in i[1]:
+            line=','.join(s for s in row)
+            line=name+',한신평cp,'+line           
+            f.write(line)
+            f.write('\n')
+        for row in i[3]:
+            line=','.join(s for s in row)
+            line=name+',나신평cp,'+line
+            f.write(line)
+            f.write('\n')
+        for row in i[2]:
+            line=','.join(s for s in row)
+            line=name+',한신평stp,'+line
+            f.write(line)
+            f.write('\n')
+        for row in i[4]:
+            line=','.join(s for s in row)
+            line=name+',나신평stp,'+line
+            f.write(line)
+            f.write('\n')
+
+'''
 with open('output.csv','a',newline='') as f:
     for i in output:
         name=i[0]
@@ -331,8 +373,6 @@ with open('output.csv','a',newline='') as f:
             line=','.join(s for s in row)
             line=',나신평cp,'+line
             cpline+=line
-            f.write(cpline)
-            f.write('\n')
         for row in i[2]:
             line=','.join(s for s in row)
             line=name+',한신평stp,'+line
@@ -341,6 +381,9 @@ with open('output.csv','a',newline='') as f:
             line=','.join(s for s in row)
             line=',나신평stp,'+line
             stpline+=line
-            f.write(stpline)
-            f.write('\n')
+        f.write(stpline)
+        f.write('\n')
+        f.write(cpline)
+        f.write('\n')
 
+'''
