@@ -144,19 +144,19 @@ try:
         #print('기업어음포함')
         table = driver.find_element(By.CSS_SELECTOR, '#tbl2')
         
-        cp2.append(['평정', '현재등급', '등급결정일', '등급확정일', '유효기간', '요지', '재무', '보고서'])
-
         rows=table.find_elements(By.CSS_SELECTOR, "#tbl2 > tbody")
         rows=rows[0].text.split('\n')
-        for i in rows:
-            cp2.append(i.split(' '))
 
-        print("나신평 "+search+"의 기업어음 리스트 : ")
-        for i in cp2:
-            print(i)
-            
-    else:
-        print(search+" 기업은 나신평에 기업어움이 없습니다.\n")    
+        if rows[0]=='등록된 정보가 없습니다.':
+            print(search+" 기업은 나신평에 기업어움이 없습니다.\n")
+        else:
+            cp2.append(['평정', '현재등급', '등급결정일', '등급확정일', '유효기간', '요지', '재무', '보고서'])
+            for i in rows:
+                cp2.append(i.split(' '))
+
+            print("나신평 "+search+"의 기업어음 리스트 : ")
+            for i in cp2:
+                print(i)           
            
 except Exception:
     print(search+" 기업은 나신평에 기업어움이 없습니다.\n")
@@ -169,26 +169,26 @@ try:
         table = driver.find_element(By.CSS_SELECTOR, '#tbl3')
         
         temp=[]
-        stb2.append(['평정', '현재등급', '등급결정일' ,'등급확정일', '발행한도(억원)', '발행금액(억원)', '요지', '재무', '보고서'])
-
+        
         rows=table.find_elements(By.CSS_SELECTOR, "#tbl3 > tbody")
         rows=rows[0].text.split('\n')
-        for i in rows:
-            stb2.append(i.split(' '))
 
-        print("나신평 "+search+"의 전자단기사채 리스트 : ")
-        for i in stb2:
-            print(i)
-            
-    else:
-        print(search+" 기업은 나신평에 전자단기사채가 없습니다.\n")
-   
+        if rows[0]=='등록된 정보가 없습니다.':
+            print(search+" 기업은 나신평에 전자단기사채가 없습니다.\n")
+        else:
+            stb2.append(['평정', '현재등급', '등급결정일' ,'등급확정일', '발행한도(억원)', '발행금액(억원)', '요지', '재무', '보고서'])
+            for i in rows:
+                stb2.append(i.split(' '))
+
+            print("나신평 "+search+"의 전자단기사채 리스트 : ")
+            for i in stb2:
+                print(i)
         
 except Exception:
     print(search+" 기업은 나신평에 전자단기사채가 없습니다.\n")
 
 
-
+'''
 print("한기평 시작\n")
 #############################한기평 시작#####################
 driver.get(url3)
@@ -268,5 +268,5 @@ except Exception:
 #driver.quit()
     
 #mySheet13-table
-
+'''
 
