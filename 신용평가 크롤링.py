@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 import requests
 
 import time
+import csv
 
 ####################################검색 리스트 입력#######################################
 
@@ -300,18 +301,42 @@ except Exception:
 
 #출력소스
 for i in output:
-    print('회사명 :'+output[0][0])
+    print('회사명 :'+i[0])
     print('한신평 cp : ')
-    for i in output[0][1]:
-        print(i)
+    for j in i[1]:
+        print(j)
     print('나신평 cp: ')
-    for i in output[0][3]:
-        print(i)
+    for j in i[3]:
+        print(j)
     print('한신평 stp :')
-    for i in output[0][2]:
-        print(i)
+    for j in i[2]:
+        print(j)
     print('나신평 stp :')
-    for i in output[0][4]:
-        print(i)
+    for j in i[4]:
+        print(j)
     print('\n')
+
+with open('output.csv','a',newline='') as f:
+    for i in output:
+        name=i[0]
+        for row in i[1]:
+            line=','.join(s for s in row)
+            line=name+',한신평cp,'+line
+            f.write(line)
+            f.write('\n')
+        for row in i[3]:
+            line=','.join(s for s in row)
+            line=name+',sk신평cp,'+line
+            f.write(line)
+            f.write('\n')
+        for row in i[2]:
+            line=','.join(s for s in row)
+            line=name+',한신평stp,'+line
+            f.write(line)
+            f.write('\n')
+        for row in i[4]:
+            line=','.join(s for s in row)
+            line=name+',나신평stp,'+line
+            f.write(line)
+            f.write('\n')
 
