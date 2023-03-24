@@ -35,172 +35,188 @@ file.close()
 
 
 #########################################입력 끝###########################################
+output=[]
+
+del list_search[0]
+
+for search in list_search:
+    company=[]
+    company.append(search[1])
+    search=search[1]
+
+    url1 = 'https://www.kisrating.com/ratingsSearch/corp_search.do'         #한국신용평가 searchKeyword
+    url2 = 'https://www.nicerating.com/disclosure/dayRatingNews.do'         #나이스신용평가
+    url3 = 'https://www.korearatings.com/cms/frCmnCon/index.do?MENU_ID=360' #한국기업평가
+
+    options = webdriver.ChromeOptions()
+    options.add_argument('--headless')
+    options.add_argument('--disable-gpu')
+
+    service = Service('c:\chromedriver.exe')
+    driver = webdriver.Chrome(service=service, options=options)
 
 
-search=input('회사명을 입력하세요.')
 
-url1 = 'https://www.kisrating.com/ratingsSearch/corp_search.do'         #한국신용평가 searchKeyword
-url2 = 'https://www.nicerating.com/disclosure/dayRatingNews.do'         #나이스신용평가
-url3 = 'https://www.korearatings.com/cms/frCmnCon/index.do?MENU_ID=360' #한국기업평가
-
-#options = webdriver.ChromeOptions()
-#options.add_argument('--headless')
-#options.add_argument('--disable-gpu')
-
-#service = Service('c:\chromedriver.exe')
-#driver = webdriver.Chrome(service=service, options=options)
+    #driver = webdriver.Chrome('c:\chromedriver.exe')
+    driver.implicitly_wait(1)
 
 
 
-driver = webdriver.Chrome('c:\chromedriver.exe')
-driver.implicitly_wait(1)
+    ######################한신평 시작#####################
+    #한신평 테이블 : 기업어음, 전단채, issuer rating, 보험금지급능력평가, 자산유동화증권, 유동화익스포져, 관련 자산유동화증권, 관련 유동화 익스포져 순
+    print("한신평 시작\n")
+    driver.get(url1)
+    driver.implicitly_wait(1)
 
-
-
-######################한신평 시작#####################
-#한신평 테이블 : 기업어음, 전단채, issuer rating, 보험금지급능력평가, 자산유동화증권, 유동화익스포져, 관련 자산유동화증권, 관련 유동화 익스포져 순
-print("한신평 시작\n")
-driver.get(url1)
-driver.implicitly_wait(1)
-
-driver.find_element(By.CSS_SELECTOR, '#searchKeyword').send_keys(search)
-driver.find_element(By.CSS_SELECTOR, '#btnSearch').click()
-#페이지를 넘어가서 등급 메뉴가 나타날 때까지 기다림
-try:
-    WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tab > ul > li:nth-child(2) > a')))    
-    driver.find_element(By.CSS_SELECTOR, '#tab > ul > li:nth-child(2) > a').click()
-
-    time.sleep(1)
-
+    driver.find_element(By.CSS_SELECTOR, '#searchKeyword').send_keys(search)
+    driver.find_element(By.CSS_SELECTOR, '#btnSearch').click()
+    #페이지를 넘어가서 등급 메뉴가 나타날 때까지 기다림
     try:
-        cp1=[]
-        #print('기업어음포함')
-        table = driver.find_element(By.CSS_SELECTOR, '#tb3')
-        rows = table.find_elements(By.TAG_NAME, "tr")
-        
-        cp1.append(['재무기준일', '평가종류', '등급', '평가일', '유효일', '리포트', 'ESG인증'])
-        
-        del rows[0]
-        for row in rows:
-            temp=[]
-            td = row.find_elements(By.TAG_NAME, "td")
-            for i in td:
-                temp.append(i.text)
-            cp1.append(temp)
-        print("한신평 "+search+"의 기업어음 리스트 : ")
-        for i in cp1:
-            print(i)
-        
+        WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tab > ul > li:nth-child(2) > a')))    
+        driver.find_element(By.CSS_SELECTOR, '#tab > ul > li:nth-child(2) > a').click()
+
+        time.sleep(1)
+
+        try:
+            cp1=[]
+            #print('기업어음포함')
+            table = driver.find_element(By.CSS_SELECTOR, '#tb3')
+            rows = table.find_elements(By.TAG_NAME, "tr")
+            
+            cp1.append(['재무기준일', '평가종류', '등급', '평가일', '유효일', '리포트', 'ESG인증'])
+            
+            del rows[0]
+            for row in rows:
+                temp=[]
+                td = row.find_elements(By.TAG_NAME, "td")
+                for i in td:
+                    temp.append(i.text)
+                cp1.append(temp)
+
+            '''
+            print("한신평 "+search+"의 기업어음 리스트 : ")
+            for i in cp1:
+                print(i)
+            '''
+        except Exception:
+            print(search+" 기업은 한신평에 기업어음이 없습니다.\n")
+
+
+
+
+        try:
+            stb1=[] #asset backed short-term bond
+            
+            #print('전단채포함')
+            table = driver.find_element(By.CSS_SELECTOR, '#tb4')
+            rows = table.find_elements(By.TAG_NAME, "tr")
+                
+            stb1.append(['재무기준일', '발행한도(억원)', '평가종류', '등급', '평가일', '유효일', '리포트', 'ESG인증'])    
+            del rows[0]
+            for row in rows:
+                temp=[]
+                td = row.find_elements(By.TAG_NAME, "td")
+                for i in td:
+                    temp.append(i.text)
+                stb1.append(temp)
+            '''    
+            print("한신평 "+search+"의 전자단기사채 리스트 : ")
+            for i in stb1:
+                print(i)
+            '''    
+        except Exception:
+            print(search+" 기업은 한신평에 전단채가 없습니다.\n")
+
     except Exception:
+        print(search+" 기업은 한신평에 검색결과가 없습니다.\n")
         print(search+" 기업은 한신평에 기업어음이 없습니다.\n")
-
-
-
-
-    try:
-        stb1=[] #asset backed short-term bond
-        
-        #print('전단채포함')
-        table = driver.find_element(By.CSS_SELECTOR, '#tb4')
-        rows = table.find_elements(By.TAG_NAME, "tr")
-            
-        stb1.append(['재무기준일', '발행한도(억원)', '평가종류', '등급', '평가일', '유효일', '리포트', 'ESG인증'])    
-        del rows[0]
-        for row in rows:
-            temp=[]
-            td = row.find_elements(By.TAG_NAME, "td")
-            for i in td:
-                temp.append(i.text)
-            stb1.append(temp)
-            
-        print("한신평 "+search+"의 전자단기사채 리스트 : ")
-        for i in stb1:
-            print(i)
-            
-    except Exception:
         print(search+" 기업은 한신평에 전단채가 없습니다.\n")
-
-except Exception:
-    print(search+" 기업은 한신평에 검색결과가 없습니다.\n")
-    print(search+" 기업은 한신평에 기업어음이 없습니다.\n")
-    print(search+" 기업은 한신평에 전단채가 없습니다.\n")
-    cp1=[]
-    stb1=[]
+        cp1=[]
+        stb1=[]
 
 
 
 
-print("나신평 시작\n")
-#############################나신평 시작#####################
-driver.get(url2)
-WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#mainSText')))
-driver.find_element(By.CSS_SELECTOR, '#mainSText').send_keys(search)
-driver.find_element(By.CSS_SELECTOR, '#searchform > fieldset > input').click()
-try:
-    WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tabCompany > li:nth-child(2) > a')))
-    driver.find_element(By.CSS_SELECTOR, '#tabCompany > li:nth-child(2) > a').click()
-except Exception:
-    print("나신평 기업 여러건 검색됨.")
+    print("나신평 시작\n")
+    #############################나신평 시작#####################
+    driver.get(url2)
+    WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#mainSText')))
+    driver.find_element(By.CSS_SELECTOR, '#mainSText').send_keys(search)
+    driver.find_element(By.CSS_SELECTOR, '#searchform > fieldset > input').click()
     try:
-        WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tbl1 > tbody > tr:nth-child(1) > td.cell_type01 > a')))
-        driver.find_element(By.CSS_SELECTOR, '#tbl1 > tbody > tr:nth-child(1) > td.cell_type01 > a').click()
         WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tabCompany > li:nth-child(2) > a')))
         driver.find_element(By.CSS_SELECTOR, '#tabCompany > li:nth-child(2) > a').click()
     except Exception:
-        print(search +" 회사는 나신평 내 검색결과 없음")
+        print("나신평 기업 여러건 검색됨.")
+        try:
+            WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tbl1 > tbody > tr:nth-child(1) > td.cell_type01 > a')))
+            driver.find_element(By.CSS_SELECTOR, '#tbl1 > tbody > tr:nth-child(1) > td.cell_type01 > a').click()
+            WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tabCompany > li:nth-child(2) > a')))
+            driver.find_element(By.CSS_SELECTOR, '#tabCompany > li:nth-child(2) > a').click()
+        except Exception:
+            print(search +" 회사는 나신평 내 검색결과 없음")
 
-try:
-    cp2=[]
-    tablecp=driver.find_element(By.CSS_SELECTOR, '#tabGrade > div:nth-child(4) > h2').text
-    if '기업어음' in tablecp:
-        #print('기업어음포함')
-        table = driver.find_element(By.CSS_SELECTOR, '#tbl2')
-        
-        rows=table.find_elements(By.CSS_SELECTOR, "#tbl2 > tbody")
-        rows=rows[0].text.split('\n')
+    try:
+        cp2=[]
+        tablecp=driver.find_element(By.CSS_SELECTOR, '#tabGrade > div:nth-child(4) > h2').text
+        if '기업어음' in tablecp:
+            #print('기업어음포함')
+            table = driver.find_element(By.CSS_SELECTOR, '#tbl2')
+            
+            rows=table.find_elements(By.CSS_SELECTOR, "#tbl2 > tbody")
+            rows=rows[0].text.split('\n')
 
-        if rows[0]=='등록된 정보가 없습니다.':
-            print(search+" 기업은 나신평에 기업어움이 없습니다.\n")
-        else:
-            cp2.append(['평정', '현재등급', '등급결정일', '등급확정일', '유효기간', '요지', '재무', '보고서'])
-            for i in rows:
-                cp2.append(i.split(' '))
+            if rows[0]=='등록된 정보가 없습니다.':
+                print(search+" 기업은 나신평에 기업어움이 없습니다.\n")
+            else:
+                cp2.append(['평정', '현재등급', '등급결정일', '등급확정일', '유효기간', '요지', '재무', '보고서'])
+                for i in rows:
+                    cp2.append(i.split(' '))
+                '''
+                print("나신평 "+search+"의 기업어음 리스트 : ")
+                for i in cp2:
+                    print(i)           
+               '''
+    except Exception:
+        print(search+" 기업은 나신평에 기업어움이 없습니다.\n")
 
-            print("나신평 "+search+"의 기업어음 리스트 : ")
-            for i in cp2:
-                print(i)           
-           
-except Exception:
-    print(search+" 기업은 나신평에 기업어움이 없습니다.\n")
+    try:
+        stb2=[]
+        tablestb=driver.find_element(By.CSS_SELECTOR, '#tabGrade > div:nth-child(6) > h2').text
+        if '전자단기사채' in tablestb:
+            #print('전자단기사채포함')
+            table = driver.find_element(By.CSS_SELECTOR, '#tbl3')
+            
+            temp=[]
+            
+            rows=table.find_elements(By.CSS_SELECTOR, "#tbl3 > tbody")
+            rows=rows[0].text.split('\n')
 
-try:
-    stb2=[]
-    tablestb=driver.find_element(By.CSS_SELECTOR, '#tabGrade > div:nth-child(6) > h2').text
-    if '전자단기사채' in tablestb:
-        #print('전자단기사채포함')
-        table = driver.find_element(By.CSS_SELECTOR, '#tbl3')
-        
-        temp=[]
-        
-        rows=table.find_elements(By.CSS_SELECTOR, "#tbl3 > tbody")
-        rows=rows[0].text.split('\n')
+            if rows[0]=='등록된 정보가 없습니다.':
+                print(search+" 기업은 나신평에 전자단기사채가 없습니다.\n")
+            else:
+                stb2.append(['평정', '현재등급', '등급결정일' ,'등급확정일', '발행한도(억원)', '발행금액(억원)', '요지', '재무', '보고서'])
+                for i in rows:
+                    stb2.append(i.split(' '))
+                    
+                '''
+                print("나신평 "+search+"의 전자단기사채 리스트 : ")
+                for i in stb2:
+                    print(i)
+                '''
+    except Exception:
+        print(search+" 기업은 나신평에 전자단기사채가 없습니다.\n")
 
-        if rows[0]=='등록된 정보가 없습니다.':
-            print(search+" 기업은 나신평에 전자단기사채가 없습니다.\n")
-        else:
-            stb2.append(['평정', '현재등급', '등급결정일' ,'등급확정일', '발행한도(억원)', '발행금액(억원)', '요지', '재무', '보고서'])
-            for i in rows:
-                stb2.append(i.split(' '))
+    company.append(cp1)
+    company.append(stb1)
+    company.append(cp2)
+    company.append(stb2)
+#    company.append(cp3)
+#    company.append(stb3)
+    output.append(company)
 
-            print("나신평 "+search+"의 전자단기사채 리스트 : ")
-            for i in stb2:
-                print(i)
-        
-except Exception:
-    print(search+" 기업은 나신평에 전자단기사채가 없습니다.\n")
-
-
-
+    
+'''
 print("한기평 시작\n")
 #############################한기평 시작#####################
 driver.get(url3)
@@ -280,5 +296,22 @@ except Exception:
 #driver.quit()
     
 #mySheet13-table
+'''
 
+#출력소스
+for i in output:
+    print('회사명 :'+output[0][0])
+    print('한신평 cp : ')
+    for i in output[0][1]:
+        print(i)
+    print('나신평 cp: ')
+    for i in output[0][3]:
+        print(i)
+    print('한신평 stp :')
+    for i in output[0][2]:
+        print(i)
+    print('나신평 stp :')
+    for i in output[0][4]:
+        print(i)
+    print('\n')
 
