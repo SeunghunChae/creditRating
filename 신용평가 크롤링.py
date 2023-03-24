@@ -55,7 +55,7 @@ url3 = 'https://www.korearatings.com/cms/frCmnCon/index.do?MENU_ID=360' #한국�
 driver = webdriver.Chrome('c:\chromedriver.exe')
 driver.implicitly_wait(1)
 
-'''
+
 
 ######################한신평 시작#####################
 #한신평 테이블 : 기업어음, 전단채, issuer rating, 보험금지급능력평가, 자산유동화증권, 유동화익스포져, 관련 자산유동화증권, 관련 유동화 익스포져 순
@@ -65,61 +65,68 @@ driver.implicitly_wait(1)
 
 driver.find_element(By.CSS_SELECTOR, '#searchKeyword').send_keys(search)
 driver.find_element(By.CSS_SELECTOR, '#btnSearch').click()
-WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tab > ul > li:nth-child(2) > a')))    #페이지를 넘어가서 등급 메뉴가 나타날 때까지 기다림
-#여기서 오류
-driver.find_element(By.CSS_SELECTOR, '#tab > ul > li:nth-child(2) > a').click()
-time.sleep(1)
-
+#페이지를 넘어가서 등급 메뉴가 나타날 때까지 기다림
 try:
+    WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tab > ul > li:nth-child(2) > a')))    
+    driver.find_element(By.CSS_SELECTOR, '#tab > ul > li:nth-child(2) > a').click()
+
+    time.sleep(1)
+
+    try:
+        cp1=[]
+        #print('기업어음포함')
+        table = driver.find_element(By.CSS_SELECTOR, '#tb3')
+        rows = table.find_elements(By.TAG_NAME, "tr")
+        
+        cp1.append(['재무기준일', '평가종류', '등급', '평가일', '유효일', '리포트', 'ESG인증'])
+        
+        del rows[0]
+        for row in rows:
+            temp=[]
+            td = row.find_elements(By.TAG_NAME, "td")
+            for i in td:
+                temp.append(i.text)
+            cp1.append(temp)
+        print("한신평 "+search+"의 기업어음 리스트 : ")
+        for i in cp1:
+            print(i)
+        
+    except Exception:
+        print(search+" 기업은 한신평에 기업어음이 없습니다.\n")
+
+
+
+
+    try:
+        stb1=[] #asset backed short-term bond
+        
+        #print('전단채포함')
+        table = driver.find_element(By.CSS_SELECTOR, '#tb4')
+        rows = table.find_elements(By.TAG_NAME, "tr")
+            
+        stb1.append(['재무기준일', '발행한도(억원)', '평가종류', '등급', '평가일', '유효일', '리포트', 'ESG인증'])    
+        del rows[0]
+        for row in rows:
+            temp=[]
+            td = row.find_elements(By.TAG_NAME, "td")
+            for i in td:
+                temp.append(i.text)
+            stb1.append(temp)
+            
+        print("한신평 "+search+"의 전자단기사채 리스트 : ")
+        for i in stb1:
+            print(i)
+            
+    except Exception:
+        print(search+" 기업은 한신평에 전단채가 없습니다.\n")
+
+except Exception:
+    print(search+" 기업은 한신평에 검색결과가 없습니다.\n")
     cp1=[]
-    #print('기업어음포함')
-    table = driver.find_element(By.CSS_SELECTOR, '#tb3')
-    rows = table.find_elements(By.TAG_NAME, "tr")
-    
-    cp1.append(['재무기준일', '평가종류', '등급', '평가일', '유효일', '리포트', 'ESG인증'])
-    
-    del rows[0]
-    for row in rows:
-        temp=[]
-        td = row.find_elements(By.TAG_NAME, "td")
-        for i in td:
-            temp.append(i.text)
-        cp1.append(temp)
-    print("한신평 "+search+"의 기업어음 리스트 : ")
-    for i in cp1:
-        print(i)
-    
-except Exception:
-    print(search+" 기업은 한신평에 기업어음이 없습니다.\n")
-
-
-
-
-try:
-    stb1=[] #asset backed short-term bond
-    
-    #print('전단채포함')
-    table = driver.find_element(By.CSS_SELECTOR, '#tb4')
-    rows = table.find_elements(By.TAG_NAME, "tr")
-        
-    stb1.append(['재무기준일', '발행한도(억원)', '평가종류', '등급', '평가일', '유효일', '리포트', 'ESG인증'])    
-    del rows[0]
-    for row in rows:
-        temp=[]
-        td = row.find_elements(By.TAG_NAME, "td")
-        for i in td:
-            temp.append(i.text)
-        stb1.append(temp)
-        
-    print("한신평 "+search+"의 전자단기사채 리스트 : ")
-    for i in stb1:
-        print(i)
-        
-except Exception:
-    print(search+" 기업은 한신평에 전단채가 없습니다.\n")
-
+    stb1=[]
 
 '''
+
 
 print("나신평 시작\n")
 #############################나신평 시작#####################
@@ -192,7 +199,7 @@ except Exception:
     print(search+" 기업은 나신평에 전자단기사채가 없습니다.\n")
 
 
-'''
+
 print("한기평 시작\n")
 #############################한기평 시작#####################
 driver.get(url3)
