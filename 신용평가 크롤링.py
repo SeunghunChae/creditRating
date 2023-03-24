@@ -122,10 +122,12 @@ try:
 
 except Exception:
     print(search+" 기업은 한신평에 검색결과가 없습니다.\n")
+    print(search+" 기업은 한신평에 기업어음이 없습니다.\n")
+    print(search+" 기업은 한신평에 전단채가 없습니다.\n")
     cp1=[]
     stb1=[]
 
-'''
+
 
 
 print("나신평 시작\n")
@@ -134,7 +136,6 @@ driver.get(url2)
 WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#mainSText')))
 driver.find_element(By.CSS_SELECTOR, '#mainSText').send_keys(search)
 driver.find_element(By.CSS_SELECTOR, '#searchform > fieldset > input').click()
-print(1)
 try:
     WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tabCompany > li:nth-child(2) > a')))
     driver.find_element(By.CSS_SELECTOR, '#tabCompany > li:nth-child(2) > a').click()
@@ -270,14 +271,14 @@ try:
             print(i)
         
     else:
-        print(search+" 기업은 한기평에 기업어음이 없습니다.\n")
+        print(search+" 기업은 한기평에 전단채가 없습니다.\n")
 
     
 except Exception:
-    print(search+" 기업은 한기평에 기업어음이 없습니다.\n")
+    print(search+" 기업은 한기평에 전단채가 없습니다.\n")
 
 #driver.quit()
     
 #mySheet13-table
-'''
+
 
