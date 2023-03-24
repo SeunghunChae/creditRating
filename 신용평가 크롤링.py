@@ -55,7 +55,7 @@ url3 = 'https://www.korearatings.com/cms/frCmnCon/index.do?MENU_ID=360' #한국�
 driver = webdriver.Chrome('c:\chromedriver.exe')
 driver.implicitly_wait(1)
 
-
+'''
 
 ######################한신평 시작#####################
 #한신평 테이블 : 기업어음, 전단채, issuer rating, 보험금지급능력평가, 자산유동화증권, 유동화익스포져, 관련 자산유동화증권, 관련 유동화 익스포져 순
@@ -119,7 +119,7 @@ except Exception:
     print(search+" 기업은 한신평에 전단채가 없습니다.\n")
 
 
-
+'''
 
 print("나신평 시작\n")
 #############################나신평 시작#####################
@@ -127,15 +127,19 @@ driver.get(url2)
 WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#mainSText')))
 driver.find_element(By.CSS_SELECTOR, '#mainSText').send_keys(search)
 driver.find_element(By.CSS_SELECTOR, '#searchform > fieldset > input').click()
+print(1)
 try:
     WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tabCompany > li:nth-child(2) > a')))
     driver.find_element(By.CSS_SELECTOR, '#tabCompany > li:nth-child(2) > a').click()
 except Exception:
     print("나신평 기업 여러건 검색됨.")
-    WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tbl1 > tbody > tr:nth-child(1) > td.cell_type01 > a')))
-    driver.find_element(By.CSS_SELECTOR, '#tbl1 > tbody > tr:nth-child(1) > td.cell_type01 > a').click()
-    WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tabCompany > li:nth-child(2) > a')))
-    driver.find_element(By.CSS_SELECTOR, '#tabCompany > li:nth-child(2) > a').click()
+    try:
+        WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tbl1 > tbody > tr:nth-child(1) > td.cell_type01 > a')))
+        driver.find_element(By.CSS_SELECTOR, '#tbl1 > tbody > tr:nth-child(1) > td.cell_type01 > a').click()
+        WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tabCompany > li:nth-child(2) > a')))
+        driver.find_element(By.CSS_SELECTOR, '#tabCompany > li:nth-child(2) > a').click()
+    except Exception:
+        print(search +" 회사는 나신평 내 검색결과 없음")
 
 try:
     cp2=[]
