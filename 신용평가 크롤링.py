@@ -171,6 +171,7 @@ for search in list_search:
 
     print("나신평 시작\n")
     #############################나신평 시작#####################
+    realsearch=''
     driver.get(url2)
     WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#mainSText')))
     driver.find_element(By.CSS_SELECTOR, '#mainSText').send_keys(search)
@@ -183,7 +184,10 @@ for search in list_search:
         multi.append(search)
         try:
             WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tbl1 > tbody > tr:nth-child(1) > td.cell_type01 > a')))
-            driver.find_element(By.CSS_SELECTOR, '#tbl1 > tbody > tr:nth-child(1) > td.cell_type01 > a').click()
+            temp=driver.find_element(By.CSS_SELECTOR, '#tbl1 > tbody > tr:nth-child(1) > td.cell_type01 > a')
+            #실제 검색 결과
+            realsearch=temp.text
+            temp.click()
             WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tabCompany > li:nth-child(2) > a')))
             driver.find_element(By.CSS_SELECTOR, '#tabCompany > li:nth-child(2) > a').click()
         except Exception:
@@ -203,9 +207,10 @@ for search in list_search:
             if rows[0]=='등록된 정보가 없습니다.':
                 print(search+" 기업은 나신평에 기업어움이 없습니다.\n")
             else:
-                cp2.append(['평정', '현재등급', '등급결정일', '등급확정일', '유효기간', '요지', '재무', '보고서'])
+                cp2.append(['검색기업명','평정', '현재등급', '등급결정일', '등급확정일', '유효기간', '요지', '재무', '보고서'])
                 for i in rows:
                     temp=i.split(' ')
+                    temp.insert(0,realsearch)
                     #등급에 보증이 들어간 경우
                     if temp[2].find(')')!=-1:
                         temp[1]=temp[1]+' '+temp[2]
@@ -237,13 +242,15 @@ for search in list_search:
             if rows[0]=='등록된 정보가 없습니다.':
                 print(search+" 기업은 나신평에 전자단기사채가 없습니다.\n")
             else:
-                stb2.append(['평정', '현재등급', '등급결정일' ,'등급확정일', '발행한도(억원)', '발행금액(억원)', '요지', '재무', '보고서'])
+                stb2.append(['검색기업명','평정', '현재등급', '등급결정일' ,'등급확정일', '발행한도(억원)', '발행금액(억원)', '요지', '재무', '보고서'])
                 for i in rows:
+                    temp.insert(0,realsearch)
                     temp=i.split(' ')
                     #등급에 보증이 들어간 경우
                     if temp[2].find(')')!=-1:
                         temp[1]=temp[1]+' '+temp[2]
                         del temp[2]
+
                     stb2.append(temp)
                     if len(temp)>9:
                         overflow.append(search)
@@ -265,26 +272,26 @@ for search in list_search:
 #    company.append(stb3)
     output.append(company)
     
-    with open('output2.csv','a',newline='') as f:
+    with open('output3.csv','a',newline='') as f:
         name=company[0]
         for row in company[1]:
             line=','.join(s for s in row)
-            line=name+',한신평cp,'+line           
+            line='한신평cp,'+name+','+line           
             f.write(line)
             f.write('\n')
         for row in company[3]:
             line=','.join(s for s in row)
-            line=name+',나신평cp,'+line
+            line='나신평cp,'+name+','+line
             f.write(line)
             f.write('\n')
         for row in company[2]:
             line=','.join(s for s in row)
-            line=name+',한신평stb,'+line
+            line='한신평stb,'+name+','+line 
             f.write(line)
             f.write('\n')
         for row in company[4]:
             line=','.join(s for s in row)
-            line=name+',나신평stb,'+line
+            line='나신평stb,'+name+','+line 
             f.write(line)
             f.write('\n')
 
