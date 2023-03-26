@@ -5,6 +5,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
 
+import re
+
 import requests
 
 import time
@@ -140,6 +142,10 @@ for search in list_search:
                 for i in td:
                     temp.append(i.text)
                 temp[6]=''
+
+                #발행한도에 , 제거 =>csv
+                temp2=re.sub(',','',temp[1])
+                temp[1]=temp2
                 stb1.append(temp)
                 if len(temp)>8:
                     overflow.append(search)
@@ -294,21 +300,16 @@ driver.get(url3)
 WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#searchTxt')))
 driver.find_element(By.CSS_SELECTOR, '#searchTxt').send_keys(search)
 driver.find_element(By.CSS_SELECTOR, '#sub_total_search > div.input-group > button.btn.btn-search').click()
-
 table='#mySheet-table > tbody > tr:nth-child(3) > td > div > div.GMPageOne > table > tbody'
 WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, table)))
 table=driver.find_element(By.CSS_SELECTOR, table)
 rows=table.find_elements(By.TAG_NAME, "tr")
 rows[1].find_elements(By.TAG_NAME, "u")[0].click()
 #클릭 겁나 복잡하네.. 검색 결과가 여러개 나올 시 맨 위에 목록 클릭함
-
 WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tabBtn2')))
 driver.find_element(By.CSS_SELECTOR, '#tabBtn2').click()
 #등급 페이지 들어왔다.
-
 WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tabcont2')))
-
-
 try:
     cp3=[]
     tablecp=driver.find_element(By.CSS_SELECTOR, '#tabcont2 > div:nth-child(9) > div.title').text
@@ -334,9 +335,6 @@ try:
         
 except Exception:
     print(search+" 기업은 한기평에 기업어음이 없습니다.\n")
-
-
-
 #한기평 전단채
 try:
     stb3=[]
@@ -359,11 +357,9 @@ try:
         
     else:
         print(search+" 기업은 한기평에 전단채가 없습니다.\n")
-
     
 except Exception:
     print(search+" 기업은 한기평에 전단채가 없습니다.\n")
-
 #driver.quit()
     
 #mySheet13-table
@@ -387,7 +383,6 @@ for i in output:
     print('\n')
 
 '''
-
 with open('output.csv','a',newline='') as f:
     for i in output:
         name=i[0]
@@ -438,5 +433,4 @@ with open('output.csv','a',newline='') as f:
         f.write('\n')
         f.write(cpline)
         f.write('\n')
-
 '''
