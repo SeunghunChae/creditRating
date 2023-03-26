@@ -43,11 +43,12 @@ output=[]
 no_exist=[]
 multi=[]
 nocp1=[]
-nostp1=[]
+nostb1=[]
 nocp2=[]
-nostp2=[]
+nostb2=[]
 nocp3=[]
-nostp3=[]
+nostb3=[]
+overflow=[]
 
 del list_search[0]
 
@@ -109,6 +110,8 @@ for search in list_search:
                     temp.append(i.text)
                 temp[5]=''
                 cp1.append(temp)
+                if len(temp)>7:
+                    overflow.append(search)
 
             
           #  print("한신평 "+search+"의 기업어음 리스트 : ")
@@ -138,13 +141,15 @@ for search in list_search:
                     temp.append(i.text)
                 temp[6]=''
                 stb1.append(temp)
+                if len(temp)>8:
+                    overflow.append(search)
                 
            # print("한신평 "+search+"의 전자단기사채 리스트 : ")
            # for i in stb1:
            #     print(i)
                 
         except Exception:
-            nostp1.append(search)
+            nostb1.append(search)
             print(search+" 기업은 한신평에 전단채가 없습니다.\n")
 
     except Exception:
@@ -200,6 +205,8 @@ for search in list_search:
                         temp[1]=temp[1]+' '+temp[2]
                         del temp[2]
                     cp2.append(temp)
+                    if len(temp)>8:
+                        overflow.append(search)
                 '''
                 print("나신평 "+search+"의 기업어음 리스트 : ")
                 for i in cp2:
@@ -231,7 +238,9 @@ for search in list_search:
                     if temp[2].find(')')!=-1:
                         temp[1]=temp[1]+' '+temp[2]
                         del temp[2]
-                    stb2.append(temp)                  
+                    stb2.append(temp)
+                    if len(temp)>9:
+                        overflow.append(search)
                     
                 '''
                 print("나신평 "+search+"의 전자단기사채 리스트 : ")
@@ -239,7 +248,7 @@ for search in list_search:
                     print(i)
                 '''
     except Exception:
-        nostp2.append(search)
+        nostb2.append(search)
         print(search+" 기업은 나신평에 전자단기사채가 없습니다.\n")
 
     company.append(cp1)
@@ -264,12 +273,12 @@ for search in list_search:
             f.write('\n')
         for row in company[2]:
             line=','.join(s for s in row)
-            line=name+',한신평stp,'+line
+            line=name+',한신평stb,'+line
             f.write(line)
             f.write('\n')
         for row in company[4]:
             line=','.join(s for s in row)
-            line=name+',나신평stp,'+line
+            line=name+',나신평stb,'+line
             f.write(line)
             f.write('\n')
 
@@ -330,10 +339,10 @@ except Exception:
 
 #한기평 전단채
 try:
-    stp3=[]
-    tablestp=driver.find_element(By.CSS_SELECTOR, '#tabcont2 > div:nth-child(13) > div.title').text
-    if '전자단기사채' in tablestp:
-        stp3.append(['평가기준일','한도설정일','발행한도','본_평가일','본_공시일','본_등급','수_평가일','수_공시일','수_등급','정_평가일','정_공시일','정_등급','유효기간'])
+    stb3=[]
+    tablestb=driver.find_element(By.CSS_SELECTOR, '#tabcont2 > div:nth-child(13) > div.title').text
+    if '전자단기사채' in tablestb:
+        stb3.append(['평가기준일','한도설정일','발행한도','본_평가일','본_공시일','본_등급','수_평가일','수_공시일','수_등급','정_평가일','정_공시일','정_등급','유효기간'])
         table=driver.find_element(By.CSS_SELECTOR, '#mySheet13-table > tbody > tr:nth-child(3) > td > div > div.GMPageOne > table > tbody')    
         rows=table.find_elements(By.TAG_NAME, "tr")
         del rows[0]
@@ -342,10 +351,10 @@ try:
             temp=[]
             for j in range(1, 14):
                 temp.append(td[j].text)
-            stp3.append(temp)
+            stb3.append(temp)
             
         print("한기평 전단채 :")
-        for i in stp3:
+        for i in stb3:
             print(i)
         
     else:
@@ -369,10 +378,10 @@ for i in output:
     print('나신평 cp: ')
     for j in i[3]:
         print(j)
-    print('한신평 stp :')
+    print('한신평 stb :')
     for j in i[2]:
         print(j)
-    print('나신평 stp :')
+    print('나신평 stb :')
     for j in i[4]:
         print(j)
     print('\n')
@@ -394,12 +403,12 @@ with open('output.csv','a',newline='') as f:
             f.write('\n')
         for row in i[2]:
             line=','.join(s for s in row)
-            line=name+',한신평stp,'+line
+            line=name+',한신평stb,'+line
             f.write(line)
             f.write('\n')
         for row in i[4]:
             line=','.join(s for s in row)
-            line=name+',나신평stp,'+line
+            line=name+',나신평stb,'+line
             f.write(line)
             f.write('\n')
 '''
@@ -408,7 +417,7 @@ with open('output.csv','a',newline='') as f:
     for i in output:
         name=i[0]
         cpline=''
-        stpline=''
+        stbline=''
         for row in i[1]:
             line=','.join(s for s in row)
             line=name+',한신평cp,'+line
@@ -419,13 +428,13 @@ with open('output.csv','a',newline='') as f:
             cpline+=line
         for row in i[2]:
             line=','.join(s for s in row)
-            line=name+',한신평stp,'+line
-            stpline+=line
+            line=name+',한신평stb,'+line
+            stbline+=line
         for row in i[4]:
             line=','.join(s for s in row)
-            line=',나신평stp,'+line
-            stpline+=line
-        f.write(stpline)
+            line=',나신평stb,'+line
+            stbline+=line
+        f.write(stbline)
         f.write('\n')
         f.write(cpline)
         f.write('\n')
