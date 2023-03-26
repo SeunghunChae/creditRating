@@ -94,6 +94,8 @@ for search in list_search:
         WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tab > ul > li:nth-child(2) > a')))    
         driver.find_element(By.CSS_SELECTOR, '#tab > ul > li:nth-child(2) > a').click()
 
+        realsearch=driver.find_element(By.CSS_SELECTOR, '#container > div.corp_info > div.title > div > strong').text
+
         time.sleep(1)
 
         try:
@@ -102,11 +104,12 @@ for search in list_search:
             table = driver.find_element(By.CSS_SELECTOR, '#tb3')
             rows = table.find_elements(By.TAG_NAME, "tr")
             
-            cp1.append(['재무기준일', '평가종류', '등급', '평가일', '유효일', '리포트', 'ESG인증'])
+            cp1.append(['검색기업명','재무기준일', '평가종류', '등급', '평가일', '유효일', '리포트', 'ESG인증'])
             
             del rows[0]
             for row in rows:
                 temp=[]
+                temp.append(realsearch)
                 td = row.find_elements(By.TAG_NAME, "td")
                 for i in td:
                     temp.append(i.text)
@@ -138,6 +141,7 @@ for search in list_search:
             del rows[0]
             for row in rows:
                 temp=[]
+                temp.append(realsearch)
                 td = row.find_elements(By.TAG_NAME, "td")
                 for i in td:
                     temp.append(i.text)
