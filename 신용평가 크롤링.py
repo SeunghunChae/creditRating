@@ -110,11 +110,11 @@ for search in list_search:
                 temp[5]=''
                 cp1.append(temp)
 
-            '''
-            print("한신평 "+search+"의 기업어음 리스트 : ")
-            for i in cp1:
-                print(i)
-            '''
+            
+          #  print("한신평 "+search+"의 기업어음 리스트 : ")
+          #  for i in cp1:
+          #     print(i)
+            
         except Exception:
             nocp1.append(search)
             print(search+" 기업은 한신평에 기업어음이 없습니다.\n")
@@ -138,11 +138,11 @@ for search in list_search:
                     temp.append(i.text)
                 temp[6]=''
                 stb1.append(temp)
-            '''    
-            print("한신평 "+search+"의 전자단기사채 리스트 : ")
-            for i in stb1:
-                print(i)
-            '''    
+                
+           # print("한신평 "+search+"의 전자단기사채 리스트 : ")
+           # for i in stb1:
+           #     print(i)
+                
         except Exception:
             nostp1.append(search)
             print(search+" 기업은 한신평에 전단채가 없습니다.\n")
@@ -194,7 +194,12 @@ for search in list_search:
             else:
                 cp2.append(['평정', '현재등급', '등급결정일', '등급확정일', '유효기간', '요지', '재무', '보고서'])
                 for i in rows:
-                    cp2.append(i.split(' '))
+                    temp=i.split(' ')
+                    #등급에 보증이 들어간 경우
+                    if temp[2].find(')')!=-1:
+                        temp[1]=temp[1]+' '+temp[2]
+                        del temp[2]
+                    cp2.append(temp)
                 '''
                 print("나신평 "+search+"의 기업어음 리스트 : ")
                 for i in cp2:
@@ -221,7 +226,12 @@ for search in list_search:
             else:
                 stb2.append(['평정', '현재등급', '등급결정일' ,'등급확정일', '발행한도(억원)', '발행금액(억원)', '요지', '재무', '보고서'])
                 for i in rows:
-                    stb2.append(i.split(' '))
+                    temp=i.split(' ')
+                    #등급에 보증이 들어간 경우
+                    if temp[2].find(')')!=-1:
+                        temp[1]=temp[1]+' '+temp[2]
+                        del temp[2]
+                    stb2.append(temp)                  
                     
                 '''
                 print("나신평 "+search+"의 전자단기사채 리스트 : ")
@@ -367,7 +377,7 @@ for i in output:
         print(j)
     print('\n')
 
-
+'''
 
 with open('output.csv','a',newline='') as f:
     for i in output:
@@ -392,7 +402,7 @@ with open('output.csv','a',newline='') as f:
             line=name+',나신평stp,'+line
             f.write(line)
             f.write('\n')
-
+'''
 '''
 with open('output.csv','a',newline='') as f:
     for i in output:
