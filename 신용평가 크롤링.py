@@ -12,6 +12,8 @@ import requests
 import time
 import csv
 
+from rename import * #중복검색 이름 수정 함수
+
 ####################################검색 리스트 입력#######################################
 
 file=open('input.dat', 'r', encoding='utf-8')
@@ -70,7 +72,7 @@ for search in list_search:
     #메모리 누수를 막기위해 5번마다 크롬 드라이버를 끈다.
     if k%no_repeat==0:
         options = webdriver.ChromeOptions()
-        options.add_argument('--headless')
+        #options.add_argument('--headless')
         options.add_argument('--disable-gpu')
 
         service = Service('c:\chromedriver.exe')
@@ -78,8 +80,7 @@ for search in list_search:
     
     company=[]
     company.append(search[1])
-    search=search[1]
-    print('회사명 : '+search+"\n")
+    print('회사명 : '+search[1]+"\n")
  
     ######################한신평 시작#####################
     #한신평 테이블 : 기업어음, 전단채, issuer rating, 보험금지급능력평가, 자산유동화증권, 유동화익스포져, 관련 자산유동화증권, 관련 유동화 익스포져 순
@@ -87,6 +88,7 @@ for search in list_search:
     driver.get(url1)
     driver.implicitly_wait(1)
 
+    search=rename(1,search[1])
     driver.find_element(By.CSS_SELECTOR, '#searchKeyword').send_keys(search)
     driver.find_element(By.CSS_SELECTOR, '#btnSearch').click()
     #페이지를 넘어가서 등급 메뉴가 나타날 때까지 기다림
@@ -177,6 +179,7 @@ for search in list_search:
     #############################나신평 시작#####################
     realsearch=''
     driver.get(url2)
+    search=rename(2,search)
     WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#mainSText')))
     driver.find_element(By.CSS_SELECTOR, '#mainSText').send_keys(search)
     driver.find_element(By.CSS_SELECTOR, '#searchform > fieldset > input').click()
@@ -196,7 +199,7 @@ for search in list_search:
             driver.find_element(By.CSS_SELECTOR, '#tabCompany > li:nth-child(2) > a').click()
         except Exception:
             no_exist.append(search)
-            print(search +" 회사는 나신평 내 검색결과 없음")
+            print(search +" 회사는 나신평에 검색결과 없음")
 
     try:
         cp2=[]
@@ -209,7 +212,7 @@ for search in list_search:
             rows=rows[0].text.split('\n')
 
             if rows[0]=='등록된 정보가 없습니다.':
-                print(search+" 기업은 나신평에 기업어움이 없습니다.\n")
+                print(search+" 기업은 나신평에 기업어음이 없습니다.\n")
             else:
                 cp2.append(['검색기업명','평정', '현재등급', '등급결정일', '등급확정일', '유효기간', '요지', '재무', '보고서'])
                 for i in rows:
@@ -222,14 +225,10 @@ for search in list_search:
                     cp2.append(temp)
                     if len(temp)>8:
                         overflow.append(search)
-                '''
-                print("나신평 "+search+"의 기업어음 리스트 : ")
-                for i in cp2:
-                    print(i)           
-               '''
+                        
     except Exception:
         nocp2.append(search)
-        print(search+" 기업은 나신평에 기업어움이 없습니다.\n")
+        print(search+" 기업은 나신평에 기업어음이 없습니다.\n")
 
     try:
         stb2=[]
@@ -259,11 +258,6 @@ for search in list_search:
                     if len(temp)>9:
                         overflow.append(search)
                     
-                '''
-                print("나신평 "+search+"의 전자단기사채 리스트 : ")
-                for i in stb2:
-                    print(i)
-                '''
     except Exception:
         nostb2.append(search)
         print(search+" 기업은 나신평에 전자단기사채가 없습니다.\n")
@@ -303,11 +297,11 @@ for search in list_search:
     if k%no_repeat==0:
         driver.quit()
 
-    
 '''
 print("한기평 시작\n")
 #############################한기평 시작#####################
 driver.get(url3)
+search=rename(3,search[1])
 WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#searchTxt')))
 driver.find_element(By.CSS_SELECTOR, '#searchTxt').send_keys(search)
 driver.find_element(By.CSS_SELECTOR, '#sub_total_search > div.input-group > button.btn.btn-search').click()
