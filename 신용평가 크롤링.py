@@ -118,7 +118,7 @@ for search in list_search:
                 td = row.find_elements(By.TAG_NAME, "td")
                 for i in td:
                     temp.append(i.text)
-                temp[5]=''
+                temp[6]=''
                 cp1.append(temp)
                 if len(temp)>7:
                     overflow.append(search)
@@ -150,7 +150,7 @@ for search in list_search:
                 td = row.find_elements(By.TAG_NAME, "td")
                 for i in td:
                     temp.append(i.text)
-                temp[6]=''
+                temp[7]=''
 
                 #발행한도에 , 제거 =>csv
                 temp2=re.sub(',','',temp[1])
@@ -195,7 +195,7 @@ for search in list_search:
                     td = row.find_elements(By.TAG_NAME, "td")
                     for i in td:
                         temp.append(i.text)
-                    temp[5]=''
+                    temp[6]=''
                     cp1.append(temp)
                     if len(temp)>7:
                         overflow.append(search)
@@ -227,7 +227,7 @@ for search in list_search:
                     td = row.find_elements(By.TAG_NAME, "td")
                     for i in td:
                         temp.append(i.text)
-                    temp[6]=''
+                    temp[7]=''
 
                     #발행한도에 , 제거 =>csv
                     temp2=re.sub(',','',temp[1])
