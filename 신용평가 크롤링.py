@@ -72,7 +72,7 @@ for search in list_search:
     #메모리 누수를 막기위해 5번마다 크롬 드라이버를 끈다.
     if k%no_repeat==0:
         options = webdriver.ChromeOptions()
-        #options.add_argument('--headless')
+        options.add_argument('--headless')
         options.add_argument('--disable-gpu')
 
         service = Service('c:\chromedriver.exe')
