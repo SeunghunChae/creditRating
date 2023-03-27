@@ -79,7 +79,8 @@ for search in list_search:
         driver = webdriver.Chrome(service=service, options=options)
     
     company=[]
-    company.append(search[1])
+    company.append(search[1])    
+    company.append(search[0])
     print('회사명 : '+search[1]+"\n")
  
     ######################한신평 시작#####################
@@ -186,6 +187,9 @@ for search in list_search:
     try:
         WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tabCompany > li:nth-child(2) > a')))
         driver.find_element(By.CSS_SELECTOR, '#tabCompany > li:nth-child(2) > a').click()
+        #실제 검색 결과
+        temp=driver.find_element(By.CSS_SELECTOR, '#dBody > section > div.tbl_type99 > table:nth-child(1) > tbody > tr > td:nth-child(1)')
+        realsearch=temp.text
     except Exception:
         print("나신평 기업 여러건 검색됨.")
         multi.append(search)
@@ -272,24 +276,24 @@ for search in list_search:
     
     with open('output3.csv','a',newline='') as f:
         name=company[0]
-        for row in company[1]:
-            line=','.join(s for s in row)
-            line='한신평cp,'+name+','+line           
-            f.write(line)
-            f.write('\n')
-        for row in company[3]:
-            line=','.join(s for s in row)
-            line='나신평cp,'+name+','+line
-            f.write(line)
-            f.write('\n')
         for row in company[2]:
             line=','.join(s for s in row)
-            line='한신평stb,'+name+','+line 
+            line='한신평cp,'+company[1]+','+name+','+line           
             f.write(line)
             f.write('\n')
         for row in company[4]:
             line=','.join(s for s in row)
-            line='나신평stb,'+name+','+line 
+            line='나신평cp,'+company[1]+','+name+','+line
+            f.write(line)
+            f.write('\n')
+        for row in company[3]:
+            line=','.join(s for s in row)
+            line='한신평stb,'+company[1]+','+name+','+line 
+            f.write(line)
+            f.write('\n')
+        for row in company[5]:
+            line=','.join(s for s in row)
+            line='나신평stb,'+company[1]+','+name+','+line 
             f.write(line)
             f.write('\n')
 
