@@ -93,6 +93,8 @@ for search in list_search:
     driver.find_element(By.CSS_SELECTOR, '#searchKeyword').send_keys(search)
     driver.find_element(By.CSS_SELECTOR, '#btnSearch').click()
     #페이지를 넘어가서 등급 메뉴가 나타날 때까지 기다림
+
+ 
     try:
         WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tab > ul > li:nth-child(2) > a')))    
         driver.find_element(By.CSS_SELECTOR, '#tab > ul > li:nth-child(2) > a').click()
@@ -166,12 +168,89 @@ for search in list_search:
             print(search+" 기업은 한신평에 전단채가 없습니다.\n")
 
     except Exception:
-        no_exist.append(search)
-        print(search+" 기업은 한신평에 검색결과가 없습니다.\n")
-        print(search+" 기업은 한신평에 기업어음이 없습니다.\n")
-        print(search+" 기업은 한신평에 전단채가 없습니다.\n")
-        cp1=[]
-        stb1=[]
+        try:          
+            #한신평 기업 여러개 검색됨
+
+            temp=driver.find_element(By.CSS_SELECTOR, '#tb1 > tbody > tr:nth-child(1) > td.al.pl5.pr5 > a')
+            realsearch=temp.text
+            temp.click()
+
+            ##날코딩 주의 같은부분 반복
+            realsearch=driver.find_element(By.CSS_SELECTOR, '#container > div.corp_info > div.title > div > strong').text
+
+            time.sleep(1)
+
+            try:
+                cp1=[]
+                #print('기업어음포함')
+                table = driver.find_element(By.CSS_SELECTOR, '#tb3')
+                rows = table.find_elements(By.TAG_NAME, "tr")
+                
+                cp1.append(['검색기업명','재무기준일', '평가종류', '등급', '평가일', '유효일', '리포트', 'ESG인증'])
+                
+                del rows[0]
+                for row in rows:
+                    temp=[]
+                    temp.append(realsearch)
+                    td = row.find_elements(By.TAG_NAME, "td")
+                    for i in td:
+                        temp.append(i.text)
+                    temp[5]=''
+                    cp1.append(temp)
+                    if len(temp)>7:
+                        overflow.append(search)
+
+                
+              #  print("한신평 "+search+"의 기업어음 리스트 : ")
+              #  for i in cp1:
+              #     print(i)
+                
+            except Exception:
+                nocp1.append(search)
+                print(search+" 기업은 한신평에 기업어음이 없습니다.\n")
+
+
+
+
+            try:
+                stb1=[] #asset backed short-term bond
+                
+                #print('전단채포함')
+                table = driver.find_element(By.CSS_SELECTOR, '#tb4')
+                rows = table.find_elements(By.TAG_NAME, "tr")
+                    
+                stb1.append(['재무기준일', '발행한도(억원)', '평가종류', '등급', '평가일', '유효일', '리포트', 'ESG인증'])    
+                del rows[0]
+                for row in rows:
+                    temp=[]
+                    temp.append(realsearch)
+                    td = row.find_elements(By.TAG_NAME, "td")
+                    for i in td:
+                        temp.append(i.text)
+                    temp[6]=''
+
+                    #발행한도에 , 제거 =>csv
+                    temp2=re.sub(',','',temp[1])
+                    temp[1]=temp2
+                    stb1.append(temp)
+                    if len(temp)>8:
+                        overflow.append(search)
+                    
+               # print("한신평 "+search+"의 전자단기사채 리스트 : ")
+               # for i in stb1:
+               #     print(i)
+                    
+            except Exception:
+                nostb1.append(search)
+                print(search+" 기업은 한신평에 전단채가 없습니다.\n")
+            #날코딩 끝
+        except Exception:
+            no_exist.append(search)
+            print(search+" 기업은 한신평에 검색결과가 없습니다.\n")
+            print(search+" 기업은 한신평에 기업어음이 없습니다.\n")
+            print(search+" 기업은 한신평에 전단채가 없습니다.\n")
+            cp1=[]
+            stb1=[]
 
 
 
@@ -370,76 +449,4 @@ try:
 except Exception:
     print(search+" 기업은 한기평에 전단채가 없습니다.\n")
 #driver.quit()
-    
-#mySheet13-table
-'''
-
-#출력소스
-for i in output:
-    print('회사명 :'+i[0])
-    print('한신평 cp : ')
-    for j in i[1]:
-        print(j)
-    print('나신평 cp: ')
-    for j in i[3]:
-        print(j)
-    print('한신평 stb :')
-    for j in i[2]:
-        print(j)
-    print('나신평 stb :')
-    for j in i[4]:
-        print(j)
-    print('\n')
-
-'''
-with open('output.csv','a',newline='') as f:
-    for i in output:
-        name=i[0]
-        for row in i[1]:
-            line=','.join(s for s in row)
-            line=name+',한신평cp,'+line           
-            f.write(line)
-            f.write('\n')
-        for row in i[3]:
-            line=','.join(s for s in row)
-            line=name+',나신평cp,'+line
-            f.write(line)
-            f.write('\n')
-        for row in i[2]:
-            line=','.join(s for s in row)
-            line=name+',한신평stb,'+line
-            f.write(line)
-            f.write('\n')
-        for row in i[4]:
-            line=','.join(s for s in row)
-            line=name+',나신평stb,'+line
-            f.write(line)
-            f.write('\n')
-'''
-'''
-with open('output.csv','a',newline='') as f:
-    for i in output:
-        name=i[0]
-        cpline=''
-        stbline=''
-        for row in i[1]:
-            line=','.join(s for s in row)
-            line=name+',한신평cp,'+line
-            cpline+=line
-        for row in i[3]:
-            line=','.join(s for s in row)
-            line=',나신평cp,'+line
-            cpline+=line
-        for row in i[2]:
-            line=','.join(s for s in row)
-            line=name+',한신평stb,'+line
-            stbline+=line
-        for row in i[4]:
-            line=','.join(s for s in row)
-            line=',나신평stb,'+line
-            stbline+=line
-        f.write(stbline)
-        f.write('\n')
-        f.write(cpline)
-        f.write('\n')
 '''
