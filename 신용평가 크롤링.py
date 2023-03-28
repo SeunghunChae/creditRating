@@ -348,6 +348,118 @@ for search in list_search:
         nostb2.append(search)
         print(search+" 기업은 나신평에 전자단기사채가 없습니다.\n")
 
+
+
+
+    print("한기평 시작\n")
+    #############################한기평 시작#####################
+    driver.get(url3)
+    search=rename(3,search[1])
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#searchTxt')))
+    driver.find_element(By.CSS_SELECTOR, '#searchTxt').send_keys(search)
+    driver.find_element(By.CSS_SELECTOR, '#sub_total_search > div.input-group > button.btn.btn-search').click()
+    table='#mySheet-table > tbody > tr:nth-child(3) > td > div > div.GMPageOne > table > tbody'
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, table)))
+    table=driver.find_element(By.CSS_SELECTOR, table)
+    rows=table.find_elements(By.TAG_NAME, "tr")
+    rows[1].find_elements(By.TAG_NAME, "u")[0].click()
+    #클릭 겁나 복잡하네.. 검색 결과가 여러개 나올 시 맨 위에 목록 클릭함
+    WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tabBtn2')))
+    driver.find_element(By.CSS_SELECTOR, '#tabBtn2').click()
+    #등급 페이지 들어왔다.
+    WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tabcont2')))
+    try:
+        cp3=[]
+        tablecp=driver.find_element(By.CSS_SELECTOR, '#tabcont2 > div:nth-child(9) > div.title').text
+        if '기업어음' in tablecp:
+            cp3.append(['평가기준일','본_평가일','본_공시일','본_등급','수_평가일','수_공시일','수_등급','정_평가일','정_공시일','정_등급','유효기간'])
+            table=driver.find_element(By.CSS_SELECTOR, '#mySheet2-table > tbody > tr:nth-child(3) > td > div > div.GMPageOne > table > tbody')    
+            rows=table.find_elements(By.TAG_NAME, "tr")
+            #사이트가 발로 만들어져있어서 행을 직접 찍는다.
+            del rows[0]
+            for i in rows:
+                td=i.find_elements(By.TAG_NAME, "td")
+                temp=[]
+                temp.append(td[1].text)
+                for j in range(4, 25):
+                    temp.append(td[j].text)
+
+                #등급
+                code1='document.querySelector("#tabcont2 > div:nth-child(9) > div.title").textContent='
+                code2='document.querySelector("#mySheet2-table > tbody > tr:nth-child(3) > td > div > div.GMPageOne > table > tbody").childNodes['+str(k)+'].childNodes[12].textContent'
+                code=code1+code2
+                driver.execute_script(code)
+                temp[9]=driver.find_element(By.CSS_SELECTOR, '#tabcont2 > div:nth-child(9) > div.title').text
+
+                #유효기간
+                code1='document.querySelector("#tabcont2 > div:nth-child(9) > div.title").textContent='
+                code2='document.querySelector("#mySheet2-table > tbody > tr:nth-child(3) > td > div > div.GMPageOne > table > tbody").childNodes['+str(k)+'].childNodes[13].textContent'
+                code=code1+code2
+                driver.execute_script(code)
+                temp[10]=driver.find_element(By.CSS_SELECTOR, '#tabcont2 > div:nth-child(9) > div.title').text
+                
+                k+=1
+                
+                cp3.append(temp)
+                
+            print("한기평 기업어음 :")        
+            for i in cp3:
+                print(i)
+        else:
+            no_exist.append(search+'1')
+            print(search+" 기업은 한기평에 기업어음이 없습니다.\n")    
+            
+    except Exception:
+        no_exist.append(search+'2')
+        print(search+" 기업은 한기평에 기업어음이 없습니다.\n")
+    #한기평 전단채
+    try:
+        stb3=[]
+        tablestb=driver.find_element(By.CSS_SELECTOR, '#tabcont2 > div:nth-child(13) > div.title').text
+        if '전자단기사채' in tablestb:
+            stb3.append(['평가기준일','한도설정일','발행한도','본_평가일','본_공시일','본_등급','수_평가일','수_공시일','수_등급','정_평가일','정_공시일','정_등급','유효기간'])
+            table=driver.find_element(By.CSS_SELECTOR, '#mySheet13-table > tbody > tr:nth-child(3) > td > div > div.GMPageOne > table > tbody')    
+            rows=table.find_elements(By.TAG_NAME, "tr")
+            del rows[0]
+            for i in rows:
+                td=i.find_elements(By.TAG_NAME, "td")
+                temp=[]
+                for j in range(1, 14):
+                    temp.append(td[j].text)
+                
+
+                
+                #등급
+                code1='document.querySelector("#tabcont2 > div:nth-child(9) > div.title").textContent='
+                code2='document.querySelector("#mySheet13-table > tbody > tr:nth-child(3) > td > div > div.GMPageOne > table > tbody").childNodes['+str(k)+'].childNodes[14].textContent'
+                code=code1+code2
+                driver.execute_script(code)
+                temp[9]=driver.find_element(By.CSS_SELECTOR, '#tabcont2 > div:nth-child(9) > div.title').text
+
+                #유효기간
+                code1='document.querySelector("#tabcont2 > div:nth-child(9) > div.title").textContent='
+                code2='document.querySelector("#mySheet13-table > tbody > tr:nth-child(3) > td > div > div.GMPageOne > table > tbody").childNodes['+str(k)+'].childNodes[15].textContent'
+                code=code1+code2
+                driver.execute_script(code)
+                temp[10]=driver.find_element(By.CSS_SELECTOR, '#tabcont2 > div:nth-child(9) > div.title').text
+                
+                k+=1
+                
+                stb3.append(temp)
+                
+            print("한기평 전단채 :")
+            for i in stb3:
+                print(i)
+            
+        else:
+            print(search+" 기업은 한기평에 전단채가 없습니다.\n")
+            no_exist.append(search+'3')
+        
+    except Exception:
+        print(search+" 기업은 한기평에 전단채가 없습니다.\n")
+        no_exist.append(search+'4')
+    #driver.quit()
+
 ##################원본파일 작성#####################
     company.append(cp1)
     company.append(stb1)
@@ -366,7 +478,7 @@ for search in list_search:
             i.insert(2,i[1].split()[1])
             i[1]=i[1].split()[0]
     
-    with open('최종_origin.csv','a',newline='') as f:
+    with open('최종2_origin.csv','a',newline='') as f:
         name=company[0]
         for row in company[2]:
             line=','.join(s for s in row)
@@ -425,7 +537,7 @@ for search in list_search:
         elif i[2].find('취소')!=-1 :
                 stb2.remove(i)
 
-    with open('최종_execute.csv','a',newline='') as f:
+    with open('최종2_execute.csv','a',newline='') as f:
         name=company[0]
         for row in company[2]:
             line=','.join(s for s in row)
@@ -454,73 +566,6 @@ for search in list_search:
     if k%no_repeat==0:
         driver.quit()
 
-'''
-print("한기평 시작\n")
-#############################한기평 시작#####################
-driver.get(url3)
-search=rename(3,search[1])
-WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#searchTxt')))
-driver.find_element(By.CSS_SELECTOR, '#searchTxt').send_keys(search)
-driver.find_element(By.CSS_SELECTOR, '#sub_total_search > div.input-group > button.btn.btn-search').click()
-table='#mySheet-table > tbody > tr:nth-child(3) > td > div > div.GMPageOne > table > tbody'
-WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, table)))
-table=driver.find_element(By.CSS_SELECTOR, table)
-rows=table.find_elements(By.TAG_NAME, "tr")
-rows[1].find_elements(By.TAG_NAME, "u")[0].click()
-#클릭 겁나 복잡하네.. 검색 결과가 여러개 나올 시 맨 위에 목록 클릭함
-WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tabBtn2')))
-driver.find_element(By.CSS_SELECTOR, '#tabBtn2').click()
-#등급 페이지 들어왔다.
-WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tabcont2')))
-try:
-    cp3=[]
-    tablecp=driver.find_element(By.CSS_SELECTOR, '#tabcont2 > div:nth-child(9) > div.title').text
-    if '기업어음' in tablecp:
-        cp3.append(['평가기준일','본_평가일','본_공시일','본_등급','수_평가일','수_공시일','수_등급','정_평가일','정_공시일','정_등급','유효기간'])
-        table=driver.find_element(By.CSS_SELECTOR, '#mySheet2-table > tbody > tr:nth-child(3) > td > div > div.GMPageOne > table > tbody')    
-        rows=table.find_elements(By.TAG_NAME, "tr")
-        #사이트가 발로 만들어져있어서 행을 직접 찍는다.
-        del rows[0]
-        for i in rows:
-            td=i.find_elements(By.TAG_NAME, "td")
-            temp=[]
-            temp.append(td[1].text)
-            for j in range(4, 25):
-                temp.append(td[j].text)
-            cp3.append(temp)
-            
-        print("한기평 기업어음 :")        
-        for i in cp3:
-            print(i)
-    else:
-        print(search+" 기업은 한기평에 기업어음이 없습니다.\n")    
-        
-except Exception:
-    print(search+" 기업은 한기평에 기업어음이 없습니다.\n")
-#한기평 전단채
-try:
-    stb3=[]
-    tablestb=driver.find_element(By.CSS_SELECTOR, '#tabcont2 > div:nth-child(13) > div.title').text
-    if '전자단기사채' in tablestb:
-        stb3.append(['평가기준일','한도설정일','발행한도','본_평가일','본_공시일','본_등급','수_평가일','수_공시일','수_등급','정_평가일','정_공시일','정_등급','유효기간'])
-        table=driver.find_element(By.CSS_SELECTOR, '#mySheet13-table > tbody > tr:nth-child(3) > td > div > div.GMPageOne > table > tbody')    
-        rows=table.find_elements(By.TAG_NAME, "tr")
-        del rows[0]
-        for i in rows:
-            td=i.find_elements(By.TAG_NAME, "td")
-            temp=[]
-            for j in range(1, 14):
-                temp.append(td[j].text)
-            stb3.append(temp)
-            
-        print("한기평 전단채 :")
-        for i in stb3:
-            print(i)
-        
-    else:
-        print(search+" 기업은 한기평에 전단채가 없습니다.\n")
-    
-except Exception:
-    print(search+" 기업은 한기평에 전단채가 없습니다.\n")
-#driver.quit()
-'''
+
+
+
