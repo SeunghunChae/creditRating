@@ -336,7 +336,6 @@ for search in list_search:
                     temp=[]
                     temp.insert(0,realsearch)
                     temp+=i.split(' ')
-                    print(temp)
                     #등급에 보증이 들어간 경우
                     if temp[2].find(')')!=-1:
                         temp[1]=temp[1]+' '+temp[2]
@@ -367,7 +366,7 @@ for search in list_search:
             i.insert(2,i[1].split()[1])
             i[1]=i[1].split()[0]
     
-    with open('origin.csv','a',newline='') as f:
+    with open('최종_origin.csv','a',newline='') as f:
         name=company[0]
         for row in company[2]:
             line=','.join(s for s in row)
@@ -426,7 +425,7 @@ for search in list_search:
         elif i[2].find('취소')!=-1 :
                 stb2.remove(i)
 
-    with open('execute.csv','a',newline='') as f:
+    with open('최종_execute.csv','a',newline='') as f:
         name=company[0]
         for row in company[2]:
             line=','.join(s for s in row)
