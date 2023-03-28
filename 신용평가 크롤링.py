@@ -5,6 +5,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
 
+from datetime import datetime
+
 import re
 
 import requests
@@ -13,6 +15,8 @@ import time
 import csv
 
 from rename import * #중복검색 이름 수정 함수
+
+now=datetime.today().strftime("%Y.%m.%d")
 
 ####################################검색 리스트 입력#######################################
 
@@ -122,11 +126,6 @@ for search in list_search:
                 cp1.append(temp)
                 if len(temp)>7:
                     overflow.append(search)
-
-            
-          #  print("한신평 "+search+"의 기업어음 리스트 : ")
-          #  for i in cp1:
-          #     print(i)
             
         except Exception:
             nocp1.append(search)
@@ -141,7 +140,9 @@ for search in list_search:
             #print('전단채포함')
             table = driver.find_element(By.CSS_SELECTOR, '#tb4')
             rows = table.find_elements(By.TAG_NAME, "tr")
-                
+
+
+            
             stb1.append(['재무기준일', '발행한도(억원)', '평가종류', '등급', '평가일', '유효일', '리포트', 'ESG인증'])    
             del rows[0]
             for row in rows:
@@ -152,9 +153,14 @@ for search in list_search:
                     temp.append(i.text)
                 temp[7]=''
 
+                print(temp)
+
                 #발행한도에 , 제거 =>csv
                 temp2=re.sub(',','',temp[1])
                 temp[1]=temp2
+                temp2=re.sub(',','',temp[2])
+                temp[2]=temp2
+                print(temp)
                 stb1.append(temp)
                 if len(temp)>8:
                     overflow.append(search)
@@ -199,7 +205,6 @@ for search in list_search:
                     cp1.append(temp)
                     if len(temp)>7:
                         overflow.append(search)
-
                 
               #  print("한신평 "+search+"의 기업어음 리스트 : ")
               #  for i in cp1:
@@ -235,6 +240,9 @@ for search in list_search:
                     stb1.append(temp)
                     if len(temp)>8:
                         overflow.append(search)
+
+                
+                
                     
                # print("한신평 "+search+"의 전자단기사채 리스트 : ")
                # for i in stb1:
@@ -345,6 +353,7 @@ for search in list_search:
         nostb2.append(search)
         print(search+" 기업은 나신평에 전자단기사채가 없습니다.\n")
 
+##################원본파일 작성#####################
     company.append(cp1)
     company.append(stb1)
     company.append(cp2)
@@ -352,8 +361,17 @@ for search in list_search:
 #    company.append(cp3)
 #    company.append(stb3)
     output.append(company)
+
+    #cp2 평정에 보증이 들어가면 split이 되어 리스트가 늘어난다
+    for i in cp2 :
+        if i[2].find('보증')!=-1:
+            i[1]=i[1]+i[2]
+            del i[2]
+        if len(i[1].split())>1:
+            i.insert(2,i[1].split()[1])
+            i[1]=i[1].split()[0]
     
-    with open('output3.csv','a',newline='') as f:
+    with open('origin.csv','a',newline='') as f:
         name=company[0]
         for row in company[2]:
             line=','.join(s for s in row)
@@ -375,6 +393,59 @@ for search in list_search:
             line='나신평stb,'+company[1]+','+name+','+line 
             f.write(line)
             f.write('\n')
+
+
+#####################보증취소 제거 로직####################
+    #cp WR 보증 취소 제거
+    for i in cp1:
+        if i[3].find('WR')!=-1 :
+                cp1.remove(i)
+        elif i[3].find('보증')!=-1 :
+                cp1.remove(i)
+        elif i[3].find('취소')!=-1 :
+                cp1.remove(i)
+
+    #stb WR 보증 취소 제거
+    for i in stb1:
+        if i[4].find('WR')!=-1 :
+                stb1.remove(i)
+        elif i[4].find('보증')!=-1 :
+                stb1.remove(i)
+        elif i[4].find('취소')!=-1 :
+                stb1.remove(i)
+
+    for i in cp2:
+        if i[2].find('WR')!=-1 :
+                cp2.remove(i)
+        elif i[2].find('보증')!=-1 :
+                cp2.remove(i)
+        elif i[2].find('취소')!=-1 :
+                cp2.remove(i)
+
+    with open('execute.csv','a',newline='') as f:
+        name=company[0]
+        for row in company[2]:
+            line=','.join(s for s in row)
+            line='한신평cp,'+company[1]+','+name+','+line           
+            f.write(line)
+            f.write('\n')
+        for row in company[4]:
+            line=','.join(s for s in row)
+            line='나신평cp,'+company[1]+','+name+','+line
+            f.write(line)
+            f.write('\n')
+        for row in company[3]:
+            line=','.join(s for s in row)
+            line='한신평stb,'+company[1]+','+name+','+line 
+            f.write(line)
+            f.write('\n')
+        for row in company[5]:
+            line=','.join(s for s in row)
+            line='나신평stb,'+company[1]+','+name+','+line 
+            f.write(line)
+            f.write('\n')
+    
+    
 
     k+=1
     if k%no_repeat==0:
