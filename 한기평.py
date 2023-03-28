@@ -59,22 +59,33 @@ try:
         rows=table.find_elements(By.TAG_NAME, "tr")
 
         del rows[0]
-        k=2
+        k=1
         for i in rows:
-            k+=1
             td=i.find_elements(By.TAG_NAME, "td")
             temp=[]
             temp.append(td[1].text)
             for j in range(4, 25):
                 temp.append(td[j].text)
-            #정_등급
-            xpath='//*[@id="mySheet2-table"]/tbody/tr[3]/td/div/div[1]/table/tbody/tr['+str(k)+']/td[13]'
-            temp[9]=driver.find_element(By.XPATH, xpath).text
+
+            #등급
+            code1='document.querySelector("#tabcont2 > div:nth-child(9) > div.title").textContent='
+            code2='document.querySelector("#mySheet2-table > tbody > tr:nth-child(3) > td > div > div.GMPageOne > table > tbody").childNodes['+str(k)+'].childNodes[12].textContent'
+            code=code1+code2
+            driver.execute_script(code)
+            temp[9]=driver.find_element(By.CSS_SELECTOR, '#tabcont2 > div:nth-child(9) > div.title').text
+
             #유효기간
-            xpath='//*[@id="mySheet2-table"]/tbody/tr[3]/td/div/div[1]/table/tbody/tr['+str(k)+']/td[14]'
-            temp[10]=driver.find_element(By.XPATH, xpath).text
+            code1='document.querySelector("#tabcont2 > div:nth-child(9) > div.title").textContent='
+            code2='document.querySelector("#mySheet2-table > tbody > tr:nth-child(3) > td > div > div.GMPageOne > table > tbody").childNodes['+str(k)+'].childNodes[13].textContent'
+            code=code1+code2
+            driver.execute_script(code)
+            temp[10]=driver.find_element(By.CSS_SELECTOR, '#tabcont2 > div:nth-child(9) > div.title').text
+            
+            k+=1
+
             cp3.append(temp)
             
+
 
         print("한기평 기업어음 :")        
         for i in cp3:
