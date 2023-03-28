@@ -153,14 +153,11 @@ for search in list_search:
                     temp.append(i.text)
                 temp[7]=''
 
-                print(temp)
-
                 #발행한도에 , 제거 =>csv
                 temp2=re.sub(',','',temp[1])
                 temp[1]=temp2
                 temp2=re.sub(',','',temp[2])
                 temp[2]=temp2
-                print(temp)
                 stb1.append(temp)
                 if len(temp)>8:
                     overflow.append(search)
@@ -328,8 +325,6 @@ for search in list_search:
             #print('전자단기사채포함')
             table = driver.find_element(By.CSS_SELECTOR, '#tbl3')
             
-            temp=[]
-            
             rows=table.find_elements(By.CSS_SELECTOR, "#tbl3 > tbody")
             rows=rows[0].text.split('\n')
 
@@ -338,13 +333,14 @@ for search in list_search:
             else:
                 stb2.append(['검색기업명','평정', '현재등급', '등급결정일' ,'등급확정일', '발행한도(억원)', '발행금액(억원)', '요지', '재무', '보고서'])
                 for i in rows:
+                    temp=[]
                     temp.insert(0,realsearch)
-                    temp=i.split(' ')
+                    temp+=i.split(' ')
+                    print(temp)
                     #등급에 보증이 들어간 경우
                     if temp[2].find(')')!=-1:
                         temp[1]=temp[1]+' '+temp[2]
                         del temp[2]
-
                     stb2.append(temp)
                     if len(temp)>9:
                         overflow.append(search)
@@ -421,6 +417,14 @@ for search in list_search:
                 cp2.remove(i)
         elif i[2].find('취소')!=-1 :
                 cp2.remove(i)
+
+    for i in stb2:
+        if i[2].find('WR')!=-1 :
+                stb2.remove(i)
+        elif i[2].find('보증')!=-1 :
+                stb2.remove(i)
+        elif i[2].find('취소')!=-1 :
+                stb2.remove(i)
 
     with open('execute.csv','a',newline='') as f:
         name=company[0]
