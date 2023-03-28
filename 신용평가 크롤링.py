@@ -143,7 +143,7 @@ for search in list_search:
 
 
             
-            stb1.append(['재무기준일', '발행한도(억원)', '평가종류', '등급', '평가일', '유효일', '리포트', 'ESG인증'])    
+            stb1.append(['검색기업명','재무기준일', '발행한도(억원)', '평가종류', '등급', '평가일', '유효일', '리포트', 'ESG인증'])    
             del rows[0]
             for row in rows:
                 temp=[]
@@ -221,7 +221,7 @@ for search in list_search:
                 table = driver.find_element(By.CSS_SELECTOR, '#tb4')
                 rows = table.find_elements(By.TAG_NAME, "tr")
                     
-                stb1.append(['재무기준일', '발행한도(억원)', '평가종류', '등급', '평가일', '유효일', '리포트', 'ESG인증'])    
+                stb1.append(['검색기업명','재무기준일', '발행한도(억원)', '평가종류', '등급', '평가일', '유효일', '리포트', 'ESG인증'])    
                 del rows[0]
                 for row in rows:
                     temp=[]
