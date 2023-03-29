@@ -101,9 +101,9 @@ for search in list_search:
         driver.find_element(By.CSS_SELECTOR, '#tabBtn2').click()
         
 
+    cp3=[]
     try:
         WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.ID, 'ib-container2'))) 
-        cp3=[]
         cp3.append(['평가기준일','본_평가일','본_공시일','본_등급','수_평가일','수_공시일','수_등급','정_평가일','정_공시일','정_등급','유효기간','변환등급'])
         table=driver.find_element(By.XPATH, '//*[@id="mySheet2-table"]/tbody/tr[3]/td/div/div[1]/table/tbody')
         rows=table.find_elements(By.TAG_NAME, "tr")
@@ -236,3 +236,26 @@ for search in list_search:
     company.append(cp3)
     company.append(stb3)
     output.append(company)
+
+    with open('한기평_origin.csv','a',newline='') as f:
+        name=company[0]
+        for row in company[2]:
+            line=','.join(s for s in row)
+            line='한신평cp,'+company[1]+','+name+','+line           
+            f.write(line)
+            f.write('\n')
+        for row in company[4]:
+            line=','.join(s for s in row)
+            line='나신평cp,'+company[1]+','+name+','+line
+            f.write(line)
+            f.write('\n')
+        for row in company[3]:
+            line=','.join(s for s in row)
+            line='한신평stb,'+company[1]+','+name+','+line 
+            f.write(line)
+            f.write('\n')
+        for row in company[5]:
+            line=','.join(s for s in row)
+            line='나신평stb,'+company[1]+','+name+','+line 
+            f.write(line)
+            f.write('\n')
