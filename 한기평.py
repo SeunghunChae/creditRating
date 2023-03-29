@@ -71,7 +71,7 @@ for search in list_search:
     #메모리 누수를 막기위해 5번마다 크롬 드라이버를 끈다.
     if k%no_repeat==0:
         options = webdriver.ChromeOptions()
-        #options.add_argument('--headless')
+        options.add_argument('--headless')
         options.add_argument('--disable-gpu')
 
         service = Service('c:\chromedriver.exe')
@@ -108,6 +108,7 @@ for search in list_search:
         table=driver.find_element(By.XPATH, '//*[@id="mySheet2-table"]/tbody/tr[3]/td/div/div[1]/table/tbody')
         rows=table.find_elements(By.TAG_NAME, "tr")
 
+        realsearch=driver.find_element(By.XPATH, '//*[@id="contents"]/article/div[2]/table/tbody/tr[1]/td[1]').text
         #js코드로 h2태그에 값을 읽어서 가져온다.
         del rows[0]
         k=1 #rowcount
@@ -174,6 +175,7 @@ for search in list_search:
         table=driver.find_element(By.CSS_SELECTOR, '#mySheet13-table > tbody > tr:nth-child(3) > td > div > div.GMPageOne > table > tbody')    
         rows=table.find_elements(By.TAG_NAME, "tr")
 
+        realsearch=driver.find_element(By.XPATH, '//*[@id="contents"]/article/div[2]/table/tbody/tr[1]/td[1]').text
         #js코드로 h2태그에 값을 읽어서 가져온다.
         del rows[0]
         k=1 #rowcount
@@ -188,6 +190,8 @@ for search in list_search:
                 
             temp[13]=''
             temp[14]=''
+            temp2=re.sub(',','',temp[2])
+            temp[2]=temp2
 
             if stb3[k-1][11]!='':
                 pos=9
@@ -241,21 +245,11 @@ for search in list_search:
         name=company[0]
         for row in company[2]:
             line=','.join(s for s in row)
-            line='한신평cp,'+company[1]+','+name+','+line           
-            f.write(line)
-            f.write('\n')
-        for row in company[4]:
-            line=','.join(s for s in row)
-            line='나신평cp,'+company[1]+','+name+','+line
+            line='한기평cp,'+company[1]+','+company[0]+','+name+','+line           
             f.write(line)
             f.write('\n')
         for row in company[3]:
             line=','.join(s for s in row)
-            line='한신평stb,'+company[1]+','+name+','+line 
-            f.write(line)
-            f.write('\n')
-        for row in company[5]:
-            line=','.join(s for s in row)
-            line='나신평stb,'+company[1]+','+name+','+line 
+            line='한기평stb,'+company[1]+','+company[0]+','+name+','+line  
             f.write(line)
             f.write('\n')
