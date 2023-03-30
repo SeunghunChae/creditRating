@@ -71,7 +71,7 @@ for search in list_search:
     #메모리 누수를 막기위해 5번마다 크롬 드라이버를 끈다.
     if k%no_repeat==0:
         options = webdriver.ChromeOptions()
-        options.add_argument('--headless')
+        #options.add_argument('--headless')
         options.add_argument('--disable-gpu')
 
         service = Service('c:\chromedriver.exe')
@@ -96,9 +96,12 @@ for search in list_search:
         driver.find_element(By.CSS_SELECTOR, '#tabBtn2').click()
     except Exception:
         #여러건 검색됨 => 맨 위에꺼 클릭
-        driver.find_element(By.XPATH, '//*[@id="mySheet-table"]/tbody/tr[3]/td/div/div[1]/table/tbody/tr[2]/td[2]/u').click()
-        WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tabBtn2')))
-        driver.find_element(By.CSS_SELECTOR, '#tabBtn2').click()
+        try:
+            driver.find_element(By.XPATH, '//*[@id="mySheet-table"]/tbody/tr[3]/td/div/div[1]/table/tbody/tr[2]/td[2]/u').click()
+            WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tabBtn2')))
+            driver.find_element(By.CSS_SELECTOR, '#tabBtn2').click()
+        except Exception:
+            print(search+' 기업은 검색결과가 없습니다')
         
 
     cp3=[]
@@ -245,11 +248,11 @@ for search in list_search:
         name=company[0]
         for row in company[2]:
             line=','.join(s for s in row)
-            line='한기평cp,'+company[1]+','+company[0]+','+name+','+line           
+            line='한기평cp,'+company[1]+','+company[0]+','+realsearch+','+line           
             f.write(line)
             f.write('\n')
         for row in company[3]:
             line=','.join(s for s in row)
-            line='한기평stb,'+company[1]+','+company[0]+','+name+','+line  
+            line='한기평stb,'+company[1]+','+company[0]+','+realsearch+','+line  
             f.write(line)
             f.write('\n')
